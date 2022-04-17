@@ -45,10 +45,33 @@ for t in range(T_poly):
     error_count_rbf =0
     error_count_poly =0
     for j in range(m):
-        y_hat= np.sign(np.sum(alpha_poly*K_rbf[j]))
+        y_hat= np.sign(np.sum(alpha_poly*k_poly[j]))
         alpha_poly[j]+=0.5*(train[j,2]-y_hat)
         if y_hat != train[j,2]:
             error_count_rbf +=1
 
     print('after iter num {} we got {} errors in poly'.format(t,error_count_rbf))  
+
+# Test the 2 alogorithems
+
+#first we load the data
+test = np.loadtxt("data/test.csv", delimiter=',')
+test=np.asarray(test)
+
+# now we check the test
+n = len(test)
+error_count_rbf =0
+error_count_poly =0
+#start with rbf
+for j in range(n):
+    y_hat= np.sign(np.sum(alpha_rbf*K_rbf[j]))
+    if y_hat != train[j,2]:
+        error_count_rbf +=1
+#now poly
+for j in range(n):
+    y_hat= np.sign(np.sum(alpha_poly*k_poly[j]))
+    if y_hat != train[j,2]:
+        error_count_poly +=1
+print('the number of erros of the rbf kernal is {}'.format(error_count_rbf))
+print('the number of erros of the poly kernal is {}'.format(error_count_poly))
 temp=1
