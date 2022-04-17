@@ -62,15 +62,22 @@ test=np.asarray(test)
 n = len(test)
 error_count_rbf =0
 error_count_poly =0
+pos_labels_rbf=[]
+neg_labels_rbf=[]
+
+pos_labels_poly=[]
+neg_labels_poly=[]
 #start with rbf
 for j in range(n):
     y_hat= np.sign(np.sum(alpha_rbf*K_rbf[j]))
-    if y_hat != train[j,2]:
+    shuff = test[j,2]
+    if y_hat != test[j,2]:
         error_count_rbf +=1
 #now poly
 for j in range(n):
     y_hat= np.sign(np.sum(alpha_poly*k_poly[j]))
-    if y_hat != train[j,2]:
+    shuff = test[j,2]
+    if y_hat != test[j,2]:
         error_count_poly +=1
 print('the number of erros of the rbf kernal is {}'.format(error_count_rbf))
 print('the number of erros of the poly kernal is {}'.format(error_count_poly))
