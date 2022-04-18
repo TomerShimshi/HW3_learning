@@ -18,8 +18,13 @@ neg_train =np.asarray([i for i in train if i[2]==-1] )
 temp= np.asarray(pos_train)#pos_train[:, 0:1]
 temp2= temp[:, 0:1]
 # plot the data
-#plt.scatter(pos_train[:, 0:1],pos_train[:, 1:2],color='red')
-#plt.scatter(neg_train[:, 0:1],neg_train[:, 1:2],color='blue')
+plt.scatter(pos_train[:, 0:1],pos_train[:, 1:2],color='blue')
+plt.scatter(neg_train[:, 0:1],neg_train[:, 1:2],color='orange')
+plt.title('the train data')
+#plt.show()
+
+plt.savefig('train_data.png')
+
 #plt.show()
 m= len(train)
 
