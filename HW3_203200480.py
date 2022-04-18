@@ -7,9 +7,9 @@ T_rbf=100
 T_poly = 100
 sigma= 0.5
 gamma = 0.5*sigma**2
-q=1
+q=0.2
 # add a var to decide wether to run the rbf or the poly kernal
-run = 'rbf'
+run = 'poly'
 # get the train data an plot it 
 train = np.loadtxt("data/train.csv", delimiter=',')
 train=np.asarray(train)
@@ -75,11 +75,11 @@ if run == 'rbf':
         shuff = test[j,2]
         if y_hat != test[j,2]:
             error_count_rbf +=1
-            plt.scatter(train[j, 0:1],train[j, 1:2],marker= '*',color='green') 
+            plt.scatter(test[j, 0:1],test[j, 1:2],marker= '*',color='green') 
         elif y_hat == -1:
-            plt.scatter(train[j, 0:1],train[j, 1:2],marker= '*',color='orange') 
+            plt.scatter(test[j, 0:1],test[j, 1:2],marker= '*',color='orange') 
         elif y_hat == 1:
-            plt.scatter(train[j, 0:1],train[j, 1:2],marker= '*',color='blue') 
+            plt.scatter(test[j, 0:1],test[j, 1:2],marker= '*',color='blue') 
 
 
     print('the number of erros of the rbf kernal is {}'.format(error_count_rbf))
@@ -90,22 +90,39 @@ if run == 'rbf':
 else:
     #optimize for poly
     for t in range(T_poly):
-        error_count_rbf =0
-        error_count_poly =0
+        error_count =0
+        
         for j in range(m):
             y_hat= np.sign(np.sum(alpha_poly*k_poly[j]))
             alpha_poly[j]+=0.5*(train[j,2]-y_hat)
             if y_hat != train[j,2]:
-                error_count_rbf +=1
+                error_count +=1
+            if t == T_poly-1: #meaning this is the final round
+                #add sample to plot
+                if y_hat != train[j,2]:
+                    plt.scatter(train[j, 0:1],train[j, 1:2],color='green') 
+                elif y_hat == -1:
+                    plt.scatter(train[j, 0:1],train[j, 1:2],color='orange') 
+                elif y_hat == 1:
+                    plt.scatter(train[j, 0:1],train[j, 1:2],color='blue') 
 
-        print('after iter num {} we got {} errors in poly'.format(t,error_count_rbf))  
+        print('after iter num {} we got {} errors in poly'.format(t,error_count))  
 
     #now poly
+    error_count_poly =0
     for j in range(n):
         y_hat= np.sign(np.sum(alpha_poly*k_poly[j]))
         shuff = test[j,2]
         if y_hat != test[j,2]:
             error_count_poly +=1
+            plt.scatter(test[j, 0:1],test[j, 1:2],marker= '*',color='green') 
+        elif y_hat == -1:
+            plt.scatter(test[j, 0:1],test[j, 1:2],marker= '*',color='orange') 
+        elif y_hat == 1:
+            plt.scatter(test[j, 0:1],test[j, 1:2],marker= '*',color='blue') 
 
     print('the number of erros of the poly kernal is {}'.format(error_count_poly))
+    plt.title('polynomial q degree')
+    #plt.show()
+    plt.savefig('poly.png')
     temp=1
