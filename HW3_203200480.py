@@ -8,6 +8,8 @@ T_poly = 100
 sigma= 0.5
 gamma = 0.5*sigma**2
 q=1
+# add a var to decide wether to run the rbf or the poly kernal
+run = 'rbf'
 # get the train data an plot it 
 train = np.loadtxt("data/train.csv", delimiter=',')
 train=np.asarray(train)
@@ -28,29 +30,9 @@ alpha_poly = np.zeros(m)
 K_rbf = rbf_kernel(train[:,0:2],train[:,0:2],gamma)#np.zeros((m,m))
 k_poly = polynomial_kernel(train[:,0:2],train[:,0:2],coef0=q)
 
-#optimize for rbf
-for t in range(T_rbf):
-    error_count_rbf =0
-    for j in range(m):
-        y_hat= np.sign(np.sum(alpha_rbf*K_rbf[j]))
-        alpha_rbf[j]+=0.5*(train[j,2]-y_hat)
-        if y_hat != train[j,2]:
-            error_count_rbf +=1
-
-    print('after iter num {} we got {} errors in rbf'.format(t,error_count_rbf))  
 
 
-#optimize for poly
-for t in range(T_poly):
-    error_count_rbf =0
-    error_count_poly =0
-    for j in range(m):
-        y_hat= np.sign(np.sum(alpha_poly*k_poly[j]))
-        alpha_poly[j]+=0.5*(train[j,2]-y_hat)
-        if y_hat != train[j,2]:
-            error_count_rbf +=1
 
-    print('after iter num {} we got {} errors in poly'.format(t,error_count_rbf))  
 
 # Test the 2 alogorithems
 
@@ -67,18 +49,63 @@ neg_labels_rbf=[]
 
 pos_labels_poly=[]
 neg_labels_poly=[]
-#start with rbf
-for j in range(n):
-    y_hat= np.sign(np.sum(alpha_rbf*K_rbf[j]))
-    shuff = test[j,2]
-    if y_hat != test[j,2]:
-        error_count_rbf +=1
-#now poly
-for j in range(n):
-    y_hat= np.sign(np.sum(alpha_poly*k_poly[j]))
-    shuff = test[j,2]
-    if y_hat != test[j,2]:
-        error_count_poly +=1
-print('the number of erros of the rbf kernal is {}'.format(error_count_rbf))
-print('the number of erros of the poly kernal is {}'.format(error_count_poly))
-temp=1
+if run == 'rbf':
+    temp=1
+    #optimize for rbf
+    for t in range(T_rbf):
+        error_count_rbf =0
+        for j in range(m):
+            y_hat= np.sign(np.sum(alpha_rbf*K_rbf[j]))
+            alpha_rbf[j]+=0.5*(train[j,2]-y_hat)
+            if y_hat != train[j,2]:
+                error_count_rbf +=1
+            if t == T_rbf-1: #meaning this is the final round
+                #add sample to plot
+                if y_hat != train[j,2]:
+                    plt.scatter(train[j, 0:1],train[j, 1:2],color='green') 
+                elif y_hat == -1:
+                    plt.scatter(train[j, 0:1],train[j, 1:2],color='orange') 
+                elif y_hat == 1:
+                    plt.scatter(train[j, 0:1],train[j, 1:2],color='blue') 
+
+        print('after iter num {} we got {} errors in rbf'.format(t,error_count_rbf))  
+    #start with rbf
+    for j in range(n):
+        y_hat= np.sign(np.sum(alpha_rbf*K_rbf[j]))
+        shuff = test[j,2]
+        if y_hat != test[j,2]:
+            error_count_rbf +=1
+            plt.scatter(train[j, 0:1],train[j, 1:2],marker= '*',color='green') 
+        elif y_hat == -1:
+            plt.scatter(train[j, 0:1],train[j, 1:2],marker= '*',color='orange') 
+        elif y_hat == 1:
+            plt.scatter(train[j, 0:1],train[j, 1:2],marker= '*',color='blue') 
+
+
+    print('the number of erros of the rbf kernal is {}'.format(error_count_rbf))
+    plt.title('RBF')
+    plt.show()
+    
+    plt.savefig('rbf.png')
+else:
+    #optimize for poly
+    for t in range(T_poly):
+        error_count_rbf =0
+        error_count_poly =0
+        for j in range(m):
+            y_hat= np.sign(np.sum(alpha_poly*k_poly[j]))
+            alpha_poly[j]+=0.5*(train[j,2]-y_hat)
+            if y_hat != train[j,2]:
+                error_count_rbf +=1
+
+        print('after iter num {} we got {} errors in poly'.format(t,error_count_rbf))  
+
+    #now poly
+    for j in range(n):
+        y_hat= np.sign(np.sum(alpha_poly*k_poly[j]))
+        shuff = test[j,2]
+        if y_hat != test[j,2]:
+            error_count_poly +=1
+
+    print('the number of erros of the poly kernal is {}'.format(error_count_poly))
+    temp=1
