@@ -5,9 +5,9 @@ from sklearn.metrics.pairwise import polynomial_kernel
 #contants to change
 T_rbf=100
 T_poly = 100
-sigma= 0.5
+sigma= 0.4 # best based on script
 gamma = 0.5*sigma**2
-q=0.2
+q=0.1# best by tester
 # add a var to decide wether to run the rbf or the poly kernal
 run = 'poly'
 # get the train data an plot it 
