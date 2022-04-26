@@ -21,7 +21,7 @@ def RBF (x1,x2,sigma):
 #contants to change
 T_rbf=50
 T_poly = 100
-sigma= 4 # best based on script
+sigma= 2 # best based on script
 gamma = 0.5*sigma**2
 q=0.1# best by tester
 # add a var to decide wether to run the rbf or the poly kernal
@@ -127,7 +127,7 @@ else:
         error_count =0
         
         for j in range(m):
-            y_hat= np.sign(np.sum(alpha_poly*k_poly[j]))
+            y_hat= np.sign(np.sum(alpha_poly*k_poly[:,j]))
             alpha_poly[j]+=0.5*(train[j,2]-y_hat)
             if y_hat != train[j,2]:
                 error_count +=1
@@ -146,7 +146,7 @@ else:
     k_poly = polynomial_kernel(train[:,0:2],test[:,0:2],coef0=q)
     error_count_poly =0
     for j in range(n):
-        y_hat= np.sign(np.sum(alpha_poly*k_poly[j]))
+        y_hat= np.sign(np.sum(alpha_poly*k_poly[:,j]))
         shuff = test[j,2]
         if y_hat != test[j,2]:
             error_count_poly +=1
