@@ -118,7 +118,7 @@ if run == 'rbf':
 
     print('the number of erros of the rbf kernal is {}'.format(error_count_rbf))
     plt.title('RBF')
-    plt.show()
+    #plt.show()
     
     plt.savefig('rbf.png')
 else:
