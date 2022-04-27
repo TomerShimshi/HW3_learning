@@ -9,7 +9,7 @@ class DecisionStump:
         self.polarity = 1
         self.feature_idx = None
         self.threshold = None
-        self.alpha = None
+        
 
     def predict(self, X):
         n_samples = X.shape[0]
@@ -33,7 +33,7 @@ plt.savefig('1 train image.png')
 # adjustable T
 T= 50
 m,n_featurs= train.shape
-
+alpha = np.zeros(T)
 p= (1/m)*np.ones((T,m))
 clfs=[]
 n_clf=m+1
@@ -61,7 +61,8 @@ for t in range(T):
                     clf.polarity = w
                     clf.threshold =threshold
                     clf.feature_idx = featur_i
-                
+            #now we have the best h
+        epsilon = np.sum()        
 
                 
 
