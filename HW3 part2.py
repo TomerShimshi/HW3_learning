@@ -45,7 +45,7 @@ plt.imshow(np.asarray(np.reshape(train[6, :], (28, 28))),cmap='gray', vmin=0, vm
 plt.title('1 train image')
 plt.savefig('1 train image.png')
 # adjustable T
-T= 3
+T= 30
 m,n_featurs= train.shape
 alpha = np.zeros(T)
 p= (1/m)*np.ones((T+1,m))
