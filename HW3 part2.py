@@ -37,10 +37,10 @@ plt.imshow(np.asarray(np.reshape(train[6, :], (28, 28))),cmap='gray', vmin=0, vm
 plt.title('1 train image')
 plt.savefig('1 train image.png')
 # adjustable T
-T= 30
+T= 33
 m,n_featurs= train.shape
 alpha = np.zeros(T)
-p= (1/m)*np.ones((T,m))
+p= (1/m)*np.ones((T+1,m))
 errors = np.zeros(T)
 clfs=[]
 n_clf=m+1
@@ -76,7 +76,10 @@ for t in range(T):
     sum=0
     for i in range(m):
         sum+=p[t][i]*np.exp(-alpha[t]*train_labels[i]*clf.predict(train[i]))
-    p[t+1]=(p[t][clf.feature_idx]*np.exp(-alpha[t]*train_labels*preds))/sum
+    #p[t+1][clf.feature_idx]=(p[t][clf.feature_idx]*np.exp(-alpha[t]*train_labels*preds))/sum
+    for i in range(m):
+        p[t+1][i]=(p[t][i]*np.exp(-alpha[t]*train_labels[i]*preds[i]))/sum
+    
     #not sure about this
     #p[t+1]/=np.sum(p[t+1])
     clfs.append(clf)
@@ -94,4 +97,14 @@ for t in range(T):
                 
 
                 #now we find the error
-
+test = np.loadtxt("data\MNIST_test_images.csv", delimiter=',')
+test=np.asarray(train)
+test_labels = np.loadtxt("data/MNIST_test_labels.csv", delimiter=',')
+test_labels=np.asarray(train_labels)
+clf_preds = [alpha[t] * clf.predict(test) for clf in clfs]
+y_pred = np.sum(clf_preds, axis=0)
+y_pred = np.sign(y_pred)
+missclasified = [test_labels != y_pred]
+error = np.sum(missclasified)
+accurecy = 1.0 - error/len(test_labels)
+print('on the test we got {} errors out of {} and accurecy of {}'.format(error,len(test_labels),accurecy))
