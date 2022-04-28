@@ -26,22 +26,31 @@ class DecisionStump:
             predictions[X_column > self.threshold] = -1
 
         return predictions
-
+#load the data
 train = np.loadtxt("data/MNIST_train_images.csv", delimiter=',')
 train=np.asarray(train)
 train_labels = np.loadtxt("data/MNIST_train_labels.csv", delimiter=',')
 train_labels=np.asarray(train_labels)
+#load the test data
+test = np.loadtxt("data/MNIST_test_images.csv", delimiter=',')
+test=np.asarray(test)
+test_labels = np.loadtxt("data/MNIST_test_labels.csv", delimiter=',')
+test_labels=np.asarray(test_labels)
 temp = train[0].ndim
+
+
+
 #plot 1 example from the train set 
 plt.imshow(np.asarray(np.reshape(train[6, :], (28, 28))),cmap='gray', vmin=0, vmax=255)
 plt.title('1 train image')
 plt.savefig('1 train image.png')
 # adjustable T
-T= 33
+T= 3
 m,n_featurs= train.shape
 alpha = np.zeros(T)
 p= (1/m)*np.ones((T+1,m))
-errors = np.zeros(T)
+errors_train = np.zeros(T)
+errors_test = np.zeros(T)
 clfs=[]
 n_clf=m+1
 for t in range(T):
@@ -86,21 +95,29 @@ for t in range(T):
     clf_preds = [alpha[t] * clf.predict(train) for clf in clfs]
     y_pred = np.sum(clf_preds, axis=0)
     y_pred = np.sign(y_pred)
-    missclasified = [train_labels != y_pred]
-    error = np.sum(missclasified)
-    errors[t]=error
+    missclasified_train = [train_labels != y_pred]
+    error_train = np.sum(missclasified_train)
+    #add the error for the plot
+    errors_train[t]=error_train
     
-    print('error in iteration {} is ={}'.format(t,error))
+    #now for the test
+    clf_preds = [alpha[t] * clf.predict(test) for clf in clfs]
+    y_pred = np.sum(clf_preds, axis=0)
+    y_pred = np.sign(y_pred)
+    missclasified_test = [test_labels != y_pred]
+    error_test = np.sum(missclasified_test)
+    errors_test[t]=error_test
+
+    print('error in iteration {} for the train is ={}'.format(t,error_train))
+    print('error in iteration {} for the test is ={}'.format(t,error_test))
+   
 
               
 
                 
 
                 #now we find the error
-test = np.loadtxt("data\MNIST_test_images.csv", delimiter=',')
-test=np.asarray(train)
-test_labels = np.loadtxt("data/MNIST_test_labels.csv", delimiter=',')
-test_labels=np.asarray(train_labels)
+
 clf_preds = [alpha[t] * clf.predict(test) for clf in clfs]
 y_pred = np.sum(clf_preds, axis=0)
 y_pred = np.sign(y_pred)
@@ -108,3 +125,15 @@ missclasified = [test_labels != y_pred]
 error = np.sum(missclasified)
 accurecy = 1.0 - error/len(test_labels)
 print('on the test we got {} errors out of {} and accurecy of {}'.format(error,len(test_labels),accurecy))
+t=[i for i in range(T)]
+plt.figure()
+
+plt.plot(t,errors_test,  color='g', label='test errors')
+plt.plot(t,errors_train, color='r', label='train errors')
+# Naming the x-axis, y-axis and the whole graph
+plt.xlabel("Iteration")
+plt.ylabel("Errors")
+plt.title("train and test errors per iteration")
+plt.legend()
+plt.savefig('part2 train and test errors.png')
+temp=1
