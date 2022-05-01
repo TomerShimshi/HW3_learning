@@ -46,6 +46,8 @@ plt.title('1 train image')
 plt.savefig('1 train image.png')
 # adjustable T
 T= 30
+train_size = len(train_labels)
+test_size = len(test_labels)
 m,n_featurs= train.shape
 alpha = np.zeros(T)
 p= (1/m)*np.ones((T+1,m))
@@ -98,7 +100,7 @@ for t in range(T):
     missclasified_train = [train_labels != y_pred]
     error_train = np.sum(missclasified_train)
     #add the error for the plot
-    errors_train[t]=error_train
+    errors_train[t]=error_train/ train_size
     
     #now for the test
     clf_preds = [alpha[t] * clf.predict(test) for clf in clfs]
@@ -106,7 +108,7 @@ for t in range(T):
     y_pred = np.sign(y_pred)
     missclasified_test = [test_labels != y_pred]
     error_test = np.sum(missclasified_test)
-    errors_test[t]=error_test
+    errors_test[t]=error_test/ test_size
 
     print('error in iteration {} for the train is ={}'.format(t,error_train))
     print('error in iteration {} for the test is ={}'.format(t,error_test))
@@ -126,14 +128,22 @@ error = np.sum(missclasified)
 accurecy = 1.0 - error/len(test_labels)
 print('on the test we got {} errors out of {} and accurecy of {}'.format(error,len(test_labels),accurecy))
 t=[i for i in range(T)]
-plt.figure()
+#plt.figure()
+figure, axis = plt.subplots(2)
 
-plt.plot(t,errors_test,  color='g', label='test errors')
-plt.plot(t,errors_train, color='r', label='train errors')
+axis[0].plot(t,errors_test,  color='g', label='test errors in %')
+axis[0].set_title("test errors in %")
+axis[0].legend()
+axis[0].set( ylabel='Errors')
+axis[0].label_outer()
+#plt.plot(t,errors_train, color='r', label='train errors')
+axis[1].plot(t,errors_train, color='r', label='train errors in %')
+axis[1].set_title("train errors in %")
+axis[1].legend()
 # Naming the x-axis, y-axis and the whole graph
 plt.xlabel("Iteration")
 plt.ylabel("Errors")
-plt.title("train and test errors per iteration")
-plt.legend()
+#plt.title("train and test errors per iteration")
+#plt.legend()
 plt.savefig('part2 train and test errors.png')
 temp=1
