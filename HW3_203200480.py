@@ -19,13 +19,13 @@ def RBF (x1,x2,sigma):
 
 
 #contants to change
-T_rbf=50
-T_poly = 100
+T_rbf=3
+T_poly = 8
 sigma= 2 # best based on script
 gamma = 0.5*sigma**2
 q=0.1# best by tester
 # add a var to decide wether to run the rbf or the poly kernal
-run = 'rbf'
+run = 'poly'
 # get the train data an plot it 
 train = np.loadtxt("data/train.csv", delimiter=',')
 train=np.asarray(train)
